@@ -55,6 +55,25 @@ const Box = styled.div`
     color: #FFFFFF;
     border-radius: 10000px;
     background-color: #6F92BB;
+    margin: 0 8px 8px 0;
+  }
+  ul.list-commits {
+    background-color: #D9E6F6;
+    font-size: 13px;
+    line-height: 17px;
+  }
+  ul.list-commits li {
+    list-style: none;
+    padding: 11px;
+  }
+  ul.list-commits li:nth-child(even){
+    background-color: #F1F9FE;
+  }
+  ul.list-commits li h4 {
+    color: #2E7BB4;
+    font-size: 18px;
+    font-weight: lighter;
+    line-height: 21px;
   }
 `; 
 
