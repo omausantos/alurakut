@@ -4,8 +4,6 @@ import Box from '../src/components/Box'
 import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations'
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet  } from '../src/lib/AlurakutCommons'
 
-
-
 function ProfileSidebar(propriedades) {
   return (
     <Box as="sibedar" style={{ display: "block" }}>
@@ -24,10 +22,15 @@ function ProfileSidebar(propriedades) {
   )
 }
 
+function getCity(position, comentario){
+  
+}
 
 export default function Home() {
   
-  const usuarioAleatorio = 'mauricio-dev-br';
+  
+  
+  const githubUser = 'omausantos';
   const [comunidades, setComunidades] = React.useState([{
     id: '123456789',
     title: 'Nois capota mas não breca',
@@ -38,7 +41,7 @@ export default function Home() {
   // Função para requisitar seguidores do GitHub
   const [pessoasFavoritas, setPesssoasFavoritas] = React.useState([])
   React.useEffect(() => {
-    fetch('https://api.github.com/users/peas/followers')
+    fetch(`https://api.github.com/users/${githubUser}/following`)
       .then((response) => response.json())
       .then((response) => {
         const includeListpessoasFavoritas = response.sort(() => Math.random() - Math.random()).slice(0, 6)
@@ -47,41 +50,41 @@ export default function Home() {
   }, [])
 
   // Função para requisitar lista de Comentários
-  const [listaComentarios, setListaComentarios] = React.useState([
-    {
-      "id": "1231312",
-      "name": "Mauricio Santos",
-      "comment": "O que mais quero é ir para onde não sei!",
-      "localization": "Osasco"
-    },
-    {
-      "id": "1231312w",
-      "name": "Camila Pereira",
-      "comment": "Navegar é preciso",
-      "localization": "São Caetano"
-    }
-  ])
-  /*
+  const [listaComentarios, setListaComentarios] = React.useState([])
   React.useEffect(() => {
-    fetch('https://api.github.com/users/peas/followers')
+    fetch('/api/comments')
+      .then((response) => response.json())
+      .then((response) => {
+        const includesetListaComentarios = 
+          response
+          .slice(0, 6)
+        setListaComentarios(includesetListaComentarios)
+      })
+  }, [])
+
+  // Função para requisitar Cidade
+  const [city, setCity] = React.useState([])
+  React.useEffect(() => {
+    fetch('/api/comments')
       .then((response) => response.json())
       .then((response) => {
         const includesetListaComentarios = response.sort(() => Math.random() - Math.random()).slice(0, 6)
-        //setListaComentarios(includesetListaComentarios)
+        setListaComentarios(includesetListaComentarios)
       })
-  }, [])*/
+  }, [])
 
 
 
   return (
     <>
       
-      <AlurakutMenu githubUser={usuarioAleatorio}/>
+      <AlurakutMenu githubUser={githubUser}/>
       <MainGrid>
         <div className="profileArea" style={{ gridArea: 'profileArea'}}>
-          <ProfileSidebar githubUser={usuarioAleatorio} />
+          <ProfileSidebar githubUser={githubUser} />
         </div>
         <div className="welcomeArea" style={{ gridArea: 'welcomeArea'}}>
+          
           <Box>
             <h1 className="title">
               Bem vindo, Fulano!
@@ -141,32 +144,24 @@ export default function Home() {
 
             <form onSubmit={(e) => {
               e.preventDefault();
-              
-              navigator.geolocation.getCurrentPosition(function(position) {
+              const dadosForm = new FormData(e.target);
+              const comentario = {
+                name: dadosForm.get('name'),
+                comment: dadosForm.get('comment'),
+                city: dadosForm.get('city')
+              }
 
-                fetch('/api/getCity?latlng='+position.coords.latitude+','+position.coords.longitude)
-                  .then((response) => response.text())
-                  .then((response) => {
-                    const dadosForm = new FormData(e.target);
+              fetch('/api/comments', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(comentario)
+              })
 
-                    console.log(response)
+              const listaComentariosAtualizadas = [comentario, ...listaComentarios]
+              setListaComentarios(listaComentariosAtualizadas)
 
-                    const comentario = {
-                      id: new Date().toISOString(),
-                      name: dadosForm.get('name'),
-                      comment:  dadosForm.get('comment'),
-                      localization: response
-                    }
-
-                    const listaComentariosAtualizadas = [comentario, ...listaComentarios]
-                    setListaComentarios(listaComentariosAtualizadas)
-                    
-                  })
-                  
-              });
-
-
-              
             }}>
 
 
@@ -188,6 +183,14 @@ export default function Home() {
                   required
                 />
               </div>
+              <div>
+                <input 
+                  type="text" 
+                  placeholder="Está em qual cidade?" 
+                  name="city" 
+                  arial-label="Está em qual cidade?"
+                />
+              </div>
 
               <button>
                 Adicionar +
@@ -206,7 +209,7 @@ export default function Home() {
                 return (
                   <li  key={itemAtual.id}>
                     <h4>
-                      {itemAtual.name} - {itemAtual.localization}
+                      {itemAtual.name} - {itemAtual.city}
                     </h4>
                     <p>
                       {itemAtual.comment}
