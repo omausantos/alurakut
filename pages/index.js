@@ -22,13 +22,7 @@ function ProfileSidebar(propriedades) {
   )
 }
 
-function getCity(position, comentario){
-  
-}
-
-export default function Home() {
-  
-  
+export default function Home() { 
   
   const githubUser = 'omausantos';
   const [comunidades, setComunidades] = React.useState([{
@@ -61,18 +55,6 @@ export default function Home() {
         setListaComentarios(includesetListaComentarios)
       })
   }, [])
-
-  // Função para requisitar Cidade
-  const [city, setCity] = React.useState([])
-  React.useEffect(() => {
-    fetch('/api/comments')
-      .then((response) => response.json())
-      .then((response) => {
-        const includesetListaComentarios = response.sort(() => Math.random() - Math.random()).slice(0, 6)
-        setListaComentarios(includesetListaComentarios)
-      })
-  }, [])
-
 
 
   return (
