@@ -11,7 +11,7 @@ function ProfileSidebar(propriedades) {
       <hr />
 
       <p>
-        <a className="boxLink" href={`https://github.com/${propriedades.githubUser}`}>
+        <a className="boxLink" style={{ color: "#000"}} href={`https://github.com/${propriedades.githubUser}`}>
           @{propriedades.githubUser}
         </a>
       </p>
@@ -21,6 +21,30 @@ function ProfileSidebar(propriedades) {
     </Box>
   )
 }
+
+function ProfileRelationsBoxWrapperProperties(props) {
+  
+  return (
+    <ProfileRelationsBoxWrapper>
+      <h2 className="smallTitle">
+        {props.title} ({props.itens.length})
+      </h2>
+      <ul>
+        {props.itens.map((itemAtual) => {
+          return (
+            <li key={itemAtual.id}>              
+              <a href={itemAtual.html_url ? itemAtual.html_url : itemAtual.url} target="_blank">
+                <img src={itemAtual.login ? `https://github.com/${itemAtual.login}.png` : itemAtual.image} />
+                <span>{itemAtual.login ? itemAtual.login : itemAtual.title}</span>
+              </a>
+            </li>
+          )
+        })}
+      </ul>
+    </ProfileRelationsBoxWrapper>
+  )
+}
+
 
 export default function Home() { 
   
@@ -56,6 +80,11 @@ export default function Home() {
       })
   }, [])
 
+  // Variaveis de Confiável | Legal | Sexy
+  const [confiavel, setConfiavel] = React.useState([])
+  const [legal, setLegal] = React.useState([])
+  const [sexy, setSexy] = React.useState([])
+
 
   return (
     <>
@@ -72,7 +101,14 @@ export default function Home() {
               Bem vindo, Fulano!
             </h1>
 
-            <OrkutNostalgicIconSet/>
+            <OrkutNostalgicIconSet 
+              confiavel={confiavel} 
+              setconfiavel={setConfiavel}
+              legal={legal} 
+              setlegal={setLegal}
+              sexy={sexy} 
+              setsexy={setSexy}
+            />
           </Box>
           <Box>
             <h3 className="smallTitle">
@@ -81,7 +117,9 @@ export default function Home() {
             <button disabled={true}>
               Criar comunidade
             </button>
-            <button>
+            <button onClick={() => {
+              setConfiavel(3)
+            }}>
               Criar comment
             </button>    
             <form style={{ display: "none"}} onSubmit={(e) => {
@@ -203,40 +241,8 @@ export default function Home() {
           </Box>
         </div>
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea'}}>
-          <ProfileRelationsBoxWrapper>
-            <h2 className="smallTitle">
-              Comunidades ({comunidades.length})
-            </h2>
-            <ul>
-              {comunidades.map((itemAtual) => {
-                return (
-                  <li key={itemAtual.id}>
-                    <a href={itemAtual.url} target="_blank">
-                      <img src={itemAtual.image} />
-                      <span>{itemAtual.title}</span>
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </ProfileRelationsBoxWrapper>
-          <ProfileRelationsBoxWrapper>
-            <h2 className="smallTitle">
-              Devs do Poder ({pessoasFavoritas.length})
-            </h2>
-            <ul>
-              {pessoasFavoritas.map((itemAtual) => {
-                return (
-                  <li key={itemAtual.id}>
-                    <a href={`https://github.com/${itemAtual.login}`} target="_blank">
-                      <img src={`https://github.com/${itemAtual.login}.png`} />
-                      <span>{itemAtual.login}</span>
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </ProfileRelationsBoxWrapper>
+          <ProfileRelationsBoxWrapperProperties title='Comunidades' itens={comunidades} />
+          <ProfileRelationsBoxWrapperProperties title='Devs do Poder' itens={pessoasFavoritas} />
         </div>
       </MainGrid>      
     </>

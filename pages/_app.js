@@ -11,7 +11,7 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: sans-serif;
-    background: url(https://alura.mauricio.dev.br/south-park.jpg) no-repeat center top #D9E6F6;
+    //background: url(https://alura.mauricio.dev.br/south-park.jpg) no-repeat center top #D9E6F6;
   }
 
   img {

@@ -24,23 +24,16 @@ export function AlurakutMenu({ githubUser }) {
   return (
     <AlurakutMenu.Wrapper isMenuOpen={isMenuOpen}>
       <div className="container">
-        <AlurakutMenu.Logo src={`${BASE_URL}/logo.svg`} />
+        <AlurakutMenu.Logo>
+          GitKut
+        </AlurakutMenu.Logo>
 
-        <nav style={{ flex: 1 }}>
-          {[{ name: 'Inicio', slug: '/'}, {name: 'Amigos', slug: '/amigos'}, {name: 'Comunidades', slug: '/comunidades'}].map((menuItem) => (
-            <Link key={`key__${menuItem.name.toLocaleLowerCase()}`} href={`${menuItem.slug.toLocaleLowerCase()}`}>
-              {menuItem.name}
-            </Link>
-          ))}
-        </nav>
+        
 
         <nav>
           <a href={`/logout`}>
             Sair
           </a>
-          <div>
-            <input placeholder="Pesquisar no Orkut" />
-          </div>
         </nav>
 
         <button onClick={() => setMenuState(!isMenuOpen)}>
@@ -54,7 +47,7 @@ export function AlurakutMenu({ githubUser }) {
 }
 AlurakutMenu.Wrapper = styled.header`
   width: 100%;
-  //background-color: #308BC5;
+  background-color: #000;
 
   .alurakutMenuProfileSidebar {
     background: white;
@@ -81,7 +74,7 @@ AlurakutMenu.Wrapper = styled.header`
     }
     .boxLink {
       font-size: 18px;
-      color: #2E7BB4;
+      color: #000;
       -webkit-text-decoration: none;
       text-decoration: none;
       font-weight: 800;
@@ -104,9 +97,7 @@ AlurakutMenu.Wrapper = styled.header`
     justify-content: space-between;
     position: relative;
     z-index: 101;
-    @media(min-width: 860px) {
-      justify-content: flex-start;
-    }
+    
 
     button {
       border: 0;
@@ -124,14 +115,15 @@ AlurakutMenu.Wrapper = styled.header`
         display: flex;
       }
       a {
-        font-size: 12px;
+        font-size: 16px;
         color: white;
         padding: 10px 16px;
         position: relative;
         text-decoration: none;
+        font-weight: bolder;
         /*&:after {
           content: " ";
-          background-color: #5292C1;
+          background-color: green;
           display: block;
           position: absolute;
           width: 1px;
@@ -160,12 +152,14 @@ AlurakutMenu.Wrapper = styled.header`
     } 
   }
 `;
-AlurakutMenu.Logo = styled.img`
-  background-color: #ffffff;
-  padding: 9px 14px;
-  border-radius: 1000px;
-  height: 34px;
+AlurakutMenu.Logo = styled.span`
+  display: inline-flex;
+  background-color: #fff;
+  font-weight: bolder;
+  padding: 10px;
+  border-radius: 50px;
 `;
+
 
 function AlurakutMenuProfileSidebar({ githubUser }) {
   return (
@@ -227,7 +221,7 @@ export function AlurakutProfileSidebarMenuDefault() {
 AlurakutProfileSidebarMenuDefault.Wrapper = styled.div`
   a {
     font-size: 12px;
-    color: #2E7BB4;
+    color: #000;
     margin-bottom: 16px;
     display: flex;
     align-items: center;
@@ -269,7 +263,7 @@ export function OrkutNostalgicIconSet(props) {
         { name: 'Legal', slug: 'legal', icon: 'cool' },
         { name: 'Sexy', slug: 'sexy', icon: 'heart' },
       ].map(({ name, slug, icon }) => {
-        const total = props[slug] ? props[slug] : 2;
+        const total = props[slug] ? props[slug] : 0;
         return (
           <li key={`orkut__icon_set__${slug}`}>
             <span className="OrkutNostalgicIconSet__title">
@@ -278,7 +272,7 @@ export function OrkutNostalgicIconSet(props) {
             <span className="OrkutNostalgicIconSet__iconComplex" className="OrkutNostalgicIconSet__number" style={{ gridArea: 'number' }}>
               {[0, 1, 2].map((_, index) => {
                 const isHeartActive = index <= (total - 1);
-                return <img key={`orkut__icon_set__${slug}_img_${index}`} src={`https://alurakut.vercel.app/icons/${icon}.svg`} style={{ marginRight: '2px', opacity: isHeartActive ? 1 : '0.5' }} />
+                return <img key={`orkut__icon_set__${slug}_img_${index}`} src={`https://alurakut.vercel.app/icons/${icon}.svg`} onClick={() => { props['set'+slug](index+1) }} style={{ marginRight: '2px', cursor: 'pointer', opacity: isHeartActive ? 1 : '0.5' }} />
               })}
             </span>
           </li>
