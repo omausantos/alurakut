@@ -3,6 +3,7 @@ import MainGrid from '../src/components/MainGrid'
 import Box from '../src/components/Box'
 import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations'
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet  } from '../src/lib/AlurakutCommons'
+import nookies from 'nookies'
 
 function ProfileSidebar(propriedades) {
   return (
@@ -49,25 +50,26 @@ export default function Home() {
   
   const [githubUser, setGithubUser] = React.useState('omausantos')
 
+
+  // Variaveis de Confiável | Legal | Sexy
+  const [confiavel, setConfiavel] = React.useState([])
+  const [legal, setLegal] = React.useState([])
+  const [sexy, setSexy] = React.useState([])
+
   const [grupos, setGrupos] = React.useState([])
+
   React.useEffect(() => {
+    setConfiavel(nookies.get().confiavel)
+    setLegal(nookies.get().legal)
+    setSexy(nookies.get().sexy)
+
     fetch(`/api/groups?user=${githubUser}`)
       .then((response) => response.json())
       .then((response) => {
         const result = response.sort(() => Math.random() - Math.random()).slice(0, 6)
         setGrupos(result)
       })
-  }, [])
-  
-  // Função para requisitar seguidores do GitHub
-  const [pessoasFavoritas, setPesssoasFavoritas] = React.useState([])
-  React.useEffect(() => {
-    fetch(`https://api.github.com/users/${githubUser}/following`)
-      .then((response) => response.json())
-      .then((response) => {
-        const includeListpessoasFavoritas = response.sort(() => Math.random() - Math.random()).slice(0, 6)
-        setPesssoasFavoritas(includeListpessoasFavoritas)
-      })
+      
   }, [])
 
   const [images, setImages] = React.useState([])
@@ -93,11 +95,44 @@ export default function Home() {
         setListaComentarios(includesetListaComentarios)
       })
   }, [])
+  
+  // Função para requisitar quem usuário segui no GitHub
+  const [pessoasFavoritas, setPesssoasFavoritas] = React.useState([])
+  // Função para requisitar seguidores do GitHub
+  const [followersNumber, setFollowersNumber] = React.useState([])
+  const [followers, setFollowers] = React.useState([])
+  const [subscriptions, setSubscriptions] = React.useState([])
+  const [events, setEvents] = React.useState([])
+  React.useEffect(() => {
+      fetch(`https://api.github.com/users/${githubUser}/following`)
+      .then((response) => response.json())
+      .then((response) => {
+        const includeListpessoasFavoritas = response.sort(() => Math.random() - Math.random()).slice(0, 6)
+        setPesssoasFavoritas(includeListpessoasFavoritas)
+      })
+      fetch(`https://api.github.com/users/${githubUser}/followers`)
+      .then((response) => response.json())
+      .then((response) => {
+        setFollowersNumber(response.length)
+        const result = response.sort(() => Math.random() - Math.random()).slice(0, 6)
+        setFollowers(result)        
+      })
+      fetch(`https://api.github.com/users/${githubUser}/subscriptions`)
+      .then((response) => response.json())
+      .then((response) => {
+        setSubscriptions(response.length)       
+      })
+      fetch(`https://api.github.com/users/${githubUser}/events`)
+      .then((response) => response.json())
+      .then((response) => {
+        setEvents(response.length)       
+      })
+  }, [])
 
-  // Variaveis de Confiável | Legal | Sexy
-  const [confiavel, setConfiavel] = React.useState([])
-  const [legal, setLegal] = React.useState([])
-  const [sexy, setSexy] = React.useState([])
+  
+
+  
+  
 
   // Show/hide Formularios de Recado e Grupos
   const [recado, setRecado] = React.useState(true)
@@ -126,6 +161,10 @@ export default function Home() {
               setlegal={setLegal}
               sexy={sexy} 
               setsexy={setSexy}
+              fas={followersNumber}
+              recados={listaComentarios.length}
+              projetos={subscriptions}
+              commits={events}
             />
           </Box>
           <ProfileRelationsBoxWrapper>
@@ -301,7 +340,7 @@ export default function Home() {
 
           <Box>
             <h3 className="smallTitle">
-              Ideias de comentários ({listaComentarios.length})
+              Recados ({listaComentarios.length})
             </h3>
 
             <ul className="list-commits">
@@ -323,6 +362,7 @@ export default function Home() {
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea'}}>
           <ProfileRelationsBoxWrapperProperties title='Grupos' itens={grupos} />
           <ProfileRelationsBoxWrapperProperties title='Devs do Poder' itens={pessoasFavoritas} />
+          <ProfileRelationsBoxWrapperProperties title='Seguidores' itens={followers} />
         </div>
       </MainGrid>      
     </>

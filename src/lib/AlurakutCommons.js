@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import NextLink from 'next/link';
+import nookies from 'nookies';
 
 const BASE_URL = 'http://alurakut.vercel.app/';
 const v = '1';
@@ -185,29 +186,6 @@ export function AlurakutProfileSidebarMenuDefault() {
   return (
     <AlurakutProfileSidebarMenuDefault.Wrapper>
       <nav>
-        <a href="/">
-          <img src={`${BASE_URL}/icons/user.svg`} />
-            Perfil
-          </a>
-        <a href="/">
-          <img src={`${BASE_URL}/icons/book.svg`} />
-            Recados
-          </a>
-        <a href="/">
-          <img src={`${BASE_URL}/icons/camera.svg`} />
-            Fotos
-          </a>
-        <a href="/">
-          <img src={`${BASE_URL}/icons/sun.svg`} />
-            Depoimentos
-          </a>
-      </nav>
-      <hr />
-      <nav>
-        <a href="/">
-          <img src={`${BASE_URL}/icons/plus.svg`} />
-            GitHub Trends
-          </a>
         <a href="/logout">
           <img src={`${BASE_URL}//icons/logout.svg`} />
             Sair
@@ -241,10 +219,10 @@ export function OrkutNostalgicIconSet(props) {
     <OrkutNostalgicIconSet.List>
       {[
         { name: 'Recados', slug: 'recados', icon: 'book' },
-        { name: 'Fotos', slug: 'fotos', icon: 'camera' },
-        { name: 'Videos', slug: 'videos', icon: 'video-camera' },
+        { name: 'Projetos', slug: 'projetos', icon: 'plus' },
+        { name: 'Commits', slug: 'commits', icon: 'sun' },
         { name: 'Fãs', slug: 'fas', icon: 'star' },
-        { name: 'Mensagens', slug: 'mensagens', icon: 'email' },
+        //{ name: 'Mensagens', slug: 'mensagens', icon: 'email' },
       ].map(({ name, slug, icon }) => (
         <li key={`orkut__icon_set__${slug}`}>
           <span style={{ gridArea: 'title' }} className="OrkutNostalgicIconSet__title">
@@ -270,7 +248,13 @@ export function OrkutNostalgicIconSet(props) {
             <span className="OrkutNostalgicIconSet__iconComplex" className="OrkutNostalgicIconSet__number" style={{ gridArea: 'number' }}>
               {[0, 1, 2].map((_, index) => {
                 const isHeartActive = index <= (total - 1);
-                return <img key={`orkut__icon_set__${slug}_img_${index}`} src={`https://alurakut.vercel.app/icons/${icon}.svg`} onClick={() => { props['set'+slug](index+1) }} style={{ marginRight: '2px', cursor: 'pointer', opacity: isHeartActive ? 1 : '0.5' }} />
+                return <img key={`orkut__icon_set__${slug}_img_${index}`} src={`https://alurakut.vercel.app/icons/${icon}.svg`} onClick={() => { 
+                  props['set'+slug](index+1)
+                  nookies.set(null, slug, (index+1), {
+                    path: '/',
+                    maxAge: 86400 * 7 
+                  }) 
+                }} style={{ marginRight: '2px', cursor: 'pointer', opacity: isHeartActive ? 1 : '0.5' }} />
               })}
             </span>
           </li>
