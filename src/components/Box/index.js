@@ -37,7 +37,7 @@ const Box = styled.div`
     border-color: transparent;
     border-bottom-color: #ECF2FA;
   }
-  input {
+  input, textarea {
     width: 100%;
     background-color: #F4F4F4;
     color: #333333;
@@ -48,6 +48,21 @@ const Box = styled.div`
     ::placeholder {
       color: #333333;
       opacity: 1;
+    }
+  }
+  textarea {
+    border-radius: 8px;
+    @media(min-width: 860px) {
+      height: 100px;
+    }
+  }
+  label {
+    font-size: 12px;
+    padding: 0 0 4px 16px;
+    display: inline-block;
+    line-height: 16px;
+    span {
+      font-size: 14px;
     }
   }
   button {

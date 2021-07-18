@@ -226,13 +226,18 @@ export default function Home() {
                 />
               </div>
               <div>
-                <input 
-                  type="text" 
-                  placeholder="O que tem a dizer?" 
+                <label>
+                  <span>
+                    O que tem a dizer?
+                  </span><br/>
+                    (compativel com scrabs, copie aqui <a href="http://www.scrapsweb.com.br/" target="_blank">www.scrapsweb.com.br</a>)
+                </label>
+                
+                <textarea
                   name="comment" 
-                  arial-label="O que tem a dizer?"
                   required
-                />
+                >                  
+                </textarea>
                 <input 
                   type="hidden"
                   name="author"
@@ -241,6 +246,7 @@ export default function Home() {
                   }}
                   value={githubUser}
                 />
+                
               </div>
               <button className="add">
                 Criar recado
@@ -350,8 +356,7 @@ export default function Home() {
                     <h4>
                       {itemAtual.name} - {itemAtual.city}
                     </h4>
-                    <p>
-                      {itemAtual.comment}
+                    <p dangerouslySetInnerHTML={{__html: itemAtual.comment}}>
                     </p>
                   </li>
                 )
