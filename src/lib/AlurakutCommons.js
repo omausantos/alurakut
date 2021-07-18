@@ -251,7 +251,7 @@ export function OrkutNostalgicIconSet(props) {
                 return <img key={`orkut__icon_set__${slug}_img_${index}`} src={`https://alurakut.vercel.app/icons/${icon}.svg`} onClick={() => { 
                   props['set'+slug](index+1)
                   nookies.set(null, slug, (index+1), {
-                    path: '/',
+                    path: `/user/${props.githubuser}`,
                     maxAge: 86400 * 7 
                   }) 
                 }} style={{ marginRight: '2px', cursor: 'pointer', opacity: isHeartActive ? 1 : '0.5' }} />
@@ -337,7 +337,8 @@ const AlurakutLoginScreen = css`
     }
     .logoArea {
       grid-area: logoArea;
-      background-color: var(--backgroundTertiary);
+      background-color: #fafafa;
+      border: solid 1px #d1d5da;
       border-radius: var(--commonRadius);
       padding: var(--gutter);
       text-align: center;
@@ -350,6 +351,18 @@ const AlurakutLoginScreen = css`
       @media(min-width: 860px) {
         min-height: 368px;
       }
+      .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        }
+      .alert {
+        position: relative;
+        padding: .75rem 1.25rem;
+        margin-bottom: 1rem;
+        border: 1px solid transparent;
+        border-radius: .25rem;
+        }
       p {
         font-size: 12px;
         line-height: 1.2;
@@ -357,7 +370,7 @@ const AlurakutLoginScreen = css`
           margin-bottom: 12px;
         }
         strong {
-          color: var(--colorQuarternary);
+          color: var(--colorPrimary);
         }
       }
       img {
@@ -379,8 +392,9 @@ const AlurakutLoginScreen = css`
         padding: var(--gutter);
         padding-left: 50px;
         padding-right: 50px;
-        background-color: var(--backgroundSecondary);
+        background-color: #fafafa;
         border-radius: var(--commonRadius);
+        border: solid 1px #d1d5da;
         flex: 1;
         &:not(:last-child) {
           margin-bottom: var(--gap);
@@ -414,14 +428,15 @@ const AlurakutLoginScreen = css`
           border: 0;
           padding: 12px;
           border-radius: var(--commonRadius);
-          background-color: var(--colorPrimary);
+          background-color: #2ea44f;
           color: var(--textSecondaryColor);
         }
       }
     }
     .footerArea {
       grid-area: footerArea;
-      background-color: var(--backgroundQuarternary);
+      background-color: #000;
+      color: #fff;
       border-radius: var(--commonRadius);
       padding: 8px;
       p {
@@ -429,7 +444,7 @@ const AlurakutLoginScreen = css`
         text-align: center;
         a {
           text-decoration: none;
-          color: var(--colorPrimary);
+          color: #b4b7b5;
         }
       }
     }
