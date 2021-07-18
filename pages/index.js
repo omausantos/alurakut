@@ -22,8 +22,7 @@ function ProfileSidebar(propriedades) {
   )
 }
 
-function ProfileRelationsBoxWrapperProperties(props) {
-  
+function ProfileRelationsBoxWrapperProperties(props) { 
   return (
     <ProfileRelationsBoxWrapper>
       <h2 className="smallTitle">
@@ -48,14 +47,18 @@ function ProfileRelationsBoxWrapperProperties(props) {
 
 export default function Home() { 
   
-  const githubUser = 'omausantos';
-  const [comunidades, setComunidades] = React.useState([{
-    id: '123456789',
-    title: 'Nois capota mas não breca',
-    image: 'https://picsum.photos/300/300',
-    url: 'https://www.youtube.com/watch?v=a1_671v46DI'
-  }])
+  const [githubUser, setGithubUser] = React.useState('omausantos')
 
+  const [grupos, setGrupos] = React.useState([])
+  React.useEffect(() => {
+    fetch(`/api/groups?user=${githubUser}`)
+      .then((response) => response.json())
+      .then((response) => {
+        const result = response.sort(() => Math.random() - Math.random()).slice(0, 6)
+        setGrupos(result)
+      })
+  }, [])
+  
   // Função para requisitar seguidores do GitHub
   const [pessoasFavoritas, setPesssoasFavoritas] = React.useState([])
   React.useEffect(() => {
@@ -67,10 +70,21 @@ export default function Home() {
       })
   }, [])
 
+  const [images, setImages] = React.useState([])
+  const [image, setImage] = React.useState([])
+  React.useEffect(() => {
+    fetch('/api/images')
+      .then((response) => response.json())
+      .then((response) => {
+        const result = response.sort(() => Math.random() - Math.random()).slice(0, 6)
+        setImages(result)
+      })
+  }, [])
+
   // Função para requisitar lista de Comentários
   const [listaComentarios, setListaComentarios] = React.useState([])
   React.useEffect(() => {
-    fetch('/api/comments')
+    fetch(`/api/comments?user=${githubUser}`)
       .then((response) => response.json())
       .then((response) => {
         const includesetListaComentarios = 
@@ -85,6 +99,10 @@ export default function Home() {
   const [legal, setLegal] = React.useState([])
   const [sexy, setSexy] = React.useState([])
 
+  // Show/hide Formularios de Recado e Grupos
+  const [recado, setRecado] = React.useState(true)
+  const [grupo, setGrupo] = React.useState(false)
+
 
   return (
     <>
@@ -98,7 +116,7 @@ export default function Home() {
           
           <Box>
             <h1 className="title">
-              Bem vindo, Fulano!
+              Olá Visitante!
             </h1>
 
             <OrkutNostalgicIconSet 
@@ -110,66 +128,36 @@ export default function Home() {
               setsexy={setSexy}
             />
           </Box>
-          <Box>
+          <ProfileRelationsBoxWrapper>
             <h3 className="smallTitle">
               O que deseja realizar?
             </h3>        
-            <button disabled={true}>
-              Criar comunidade
+            
+            <button className={recado ? 'link action' : 'link'} onClick={() => {
+              setRecado(!recado)
+              setGrupo(!grupo)
+            }}>              
+              Deixar um recado
             </button>
-            <button onClick={() => {
-              setConfiavel(3)
+            <button className={grupo ? 'link action' : 'link'} onClick={() => {
+              setGrupo(!grupo)
+              setRecado(!recado)
             }}>
-              Criar comment
-            </button>    
-            <form style={{ display: "none"}} onSubmit={(e) => {
-              e.preventDefault();
-              const dadosForm = new FormData(e.target);
+              Indicar um grupo
+            </button>
 
-              const comunidade = {
-                id: new Date().toISOString(),
-                title: dadosForm.get('title'),
-                image:  dadosForm.get('image')
-              }
+            <form 
+              style={{ display: recado ? '' : 'none'}}
 
-              const comunidadesAtualizadas = [...comunidades, comunidade]
-              setComunidades(comunidadesAtualizadas);
-            }}>
-
-
-              <div>
-                <input 
-                  type="text" 
-                  placeholder="Qual vai ser o nome da sua comunidade" 
-                  name="title" 
-                  arial-label="Qual vai ser o nome da sua comunidade"
-                  required
-                />
-              </div>
-              <div>
-                <input 
-                  type="text" 
-                  placeholder="Coloque uma URL para usarmos na capa" 
-                  name="image" 
-                  arial-label="Coloque uma URL para usarmos na capa"
-                  required
-                />
-              </div>
-
-              <button>
-                Adicionar +
-              </button>
-              
-            </form>
-
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const dadosForm = new FormData(e.target);
-              const comentario = {
-                name: dadosForm.get('name'),
-                comment: dadosForm.get('comment'),
-                city: dadosForm.get('city')
-              }
+              onSubmit={(e) => {
+                e.preventDefault();
+                const dadosForm = new FormData(e.target);
+                const comentario = {
+                  name: dadosForm.get('name'),
+                  comment: dadosForm.get('comment'),
+                  city: dadosForm.get('city'),
+                  author: dadosForm.get('author'),
+                }
 
               fetch('/api/comments', {
                 method: 'POST',
@@ -183,15 +171,19 @@ export default function Home() {
               setListaComentarios(listaComentariosAtualizadas)
 
             }}>
-
-
-              <div>
+              <div className="rowInputs">
                 <input 
                   type="text" 
                   placeholder="Qual seu nome?" 
                   name="name" 
                   arial-label="Qual seu nome?"
                   required
+                />
+                <input 
+                  type="text" 
+                  placeholder="Está em qual cidade?" 
+                  name="city" 
+                  arial-label="Está em qual cidade?"
                 />
               </div>
               <div>
@@ -202,22 +194,110 @@ export default function Home() {
                   arial-label="O que tem a dizer?"
                   required
                 />
+                <input 
+                  type="hidden"
+                  name="author"
+                  onChange={(e) => {
+                    setGithubUser(e.target.value)
+                  }}
+                  value={githubUser}
+                />
+              </div>
+              <button className="add">
+                Criar recado
+              </button>              
+            </form>            
+                
+            <form
+              style={{ display: grupo ? '' : 'none'}}
+
+              onSubmit={(e) => {
+                e.preventDefault();
+                const dadosForm = new FormData(e.target);
+
+                const grupo = {
+                  title: dadosForm.get('title'),
+                  url: dadosForm.get('url'),
+                  image: dadosForm.get('image'),
+                  author: dadosForm.get('author'),
+                }
+
+                fetch('/api/groups', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(grupo)
+                })
+
+                const gruposAtualizadas = [
+                  {'id': new Date().toISOString(),...grupo}
+                  , ...grupos
+                ]
+                setGrupos(gruposAtualizadas);
+              }}>
+
+
+              <div className="rowInputs">
+                <input 
+                  type="text" 
+                  placeholder="Qual vai ser o nome do grupo?" 
+                  name="title" 
+                  arial-label="Qual vai ser o nome do grupo?"
+                  required
+                />
+                <input 
+                  type="text" 
+                  placeholder="Link do grupo" 
+                  name="url" 
+                  arial-label="Link da grupo"
+                  required
+                />
               </div>
               <div>
                 <input 
-                  type="text" 
-                  placeholder="Está em qual cidade?" 
-                  name="city" 
-                  arial-label="Está em qual cidade?"
+                  type="text"
+                  placeholder="Escolha uma imagem ou digite a URL"
+                  name="image"
+                  arial-label="Escolha uma imagem ou digite a URL"
+                  required
+                  onChange={(e) => {
+                    setImage(e.target.value)
+                  }}
+                  value={image}
+                />
+                <input 
+                  type="hidden"
+                  name="author"
+                  onChange={(e) => {
+                    setGithubUser(e.target.value)
+                  }}
+                  value={githubUser}
                 />
               </div>
 
-              <button>
-                Adicionar +
+              <ul>
+                {images.map((itemAtual) => {
+                  return (
+                    <li key={itemAtual.id}>              
+                      <a target="_blank" onClick={() => {
+                        setImage(itemAtual.url)
+                      }}>
+                        <img src={itemAtual.url} />
+                      </a>
+                    </li>
+                  )
+                })}
+              </ul>
+
+              <button className="add" style={{ marginTop: "10px"}}>
+                Criar grupo
               </button>
               
             </form>
-          </Box>
+            
+            
+          </ProfileRelationsBoxWrapper>
 
           <Box>
             <h3 className="smallTitle">
@@ -227,7 +307,7 @@ export default function Home() {
             <ul className="list-commits">
               {listaComentarios.map((itemAtual) => {
                 return (
-                  <li  key={itemAtual.id}>
+                  <li key={itemAtual.id}>
                     <h4>
                       {itemAtual.name} - {itemAtual.city}
                     </h4>
@@ -241,7 +321,7 @@ export default function Home() {
           </Box>
         </div>
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea'}}>
-          <ProfileRelationsBoxWrapperProperties title='Comunidades' itens={comunidades} />
+          <ProfileRelationsBoxWrapperProperties title='Grupos' itens={grupos} />
           <ProfileRelationsBoxWrapperProperties title='Devs do Poder' itens={pessoasFavoritas} />
         </div>
       </MainGrid>      

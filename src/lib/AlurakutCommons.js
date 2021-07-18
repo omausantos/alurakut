@@ -27,9 +27,7 @@ export function AlurakutMenu({ githubUser }) {
         <AlurakutMenu.Logo>
           GitKut
         </AlurakutMenu.Logo>
-
         
-
         <nav>
           <a href={`/logout`}>
             Sair

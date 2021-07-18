@@ -56,7 +56,20 @@ const Box = styled.div`
     color: #FFFFFF;
     border-radius: 10000px;
     background-color: #6F92BB;
-    margin: 0 8px 8px 0;
+    margin: 0 8px 8px 0;    
+  }
+  button.link {
+    background-color: #D9E6F6;
+    padding: 9px 12px;
+    color: #2E7BB4;
+    border-radius: 8px;
+  }
+  button.action {
+    background-color: #6F92BB;
+    color: #fff;
+  }
+  button.add {
+    background-color: #2ea44f;
   }
   ul.list-commits {
     background-color: #D9E6F6;
@@ -75,6 +88,15 @@ const Box = styled.div`
     font-size: 18px;
     font-weight: lighter;
     line-height: 21px;
+  }
+  div.rowInputs{
+    @media(min-width: 860px) {
+      display: flex;
+      justify-content: space-between;
+      input {
+        width: 49%;
+      }
+    }
   }
 `; 
 
